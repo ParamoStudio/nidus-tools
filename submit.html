@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Submit an add-on — Nidus Tools</title>
+  <meta name="description" content="Upload your Nidus tool, micro tool, or template to the marketplace." />
+  <link rel="icon" href="assets/nidus-favicon.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="index.html">NIDUS</a>
+      <nav class="topnav">
+        <a href="index.html#tools">Tools</a>
+        <a href="index.html">Browse</a>
+      </nav>
+      <div class="topbar-actions">
+        <a class="icon-btn" href="index.html" title="Back to marketplace" aria-label="Back">←</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="submit-page">
+    <div class="submit-intro">
+      <h1>Submit an add-on</h1>
+      <p>Fill this in and we'll open a submission for you — no GitHub account or coding needed. A
+      maintainer reviews it, and once approved it appears on the marketplace. Don't have a file yet?
+      <a href="HOW-TO-MAKE.md" target="_blank" rel="noopener">Make one first →</a></p>
+    </div>
+
+    <form id="submit-form" class="form" novalidate>
+      <div class="field">
+        <label>What are you submitting?</label>
+        <div class="segmented" id="type-seg" role="radiogroup">
+          <button type="button" class="seg active" data-type="tool" role="radio" aria-checked="true">Tool</button>
+          <button type="button" class="seg" data-type="microtool" role="radio" aria-checked="false">Micro tool</button>
+          <button type="button" class="seg" data-type="template" role="radio" aria-checked="false">Template</button>
+        </div>
+        <p class="field-hint" id="type-hint">A whole new tool with its own tile, cards, and open view.</p>
+      </div>
+
+      <div class="field">
+        <label for="f-name">Name</label>
+        <input type="text" id="f-name" maxlength="60" placeholder="e.g. Glaze Recipes" required />
+      </div>
+
+      <div class="field">
+        <label for="f-summary">One-line summary</label>
+        <input type="text" id="f-summary" maxlength="160" placeholder="A short sentence shown on the card." required />
+      </div>
+
+      <div class="field">
+        <label for="f-why">What it's for <span class="field-sub">(2–4 sentences: what it does and why you built it)</span></label>
+        <textarea id="f-why" rows="4" maxlength="600" required></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="f-category">Category</label>
+          <select id="f-category" required><option value="">Choose…</option></select>
+        </div>
+        <div class="field">
+          <label for="f-version">Version</label>
+          <input type="text" id="f-version" value="1.0.0" maxlength="16" />
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="f-author">Your name / handle</label>
+          <input type="text" id="f-author" maxlength="40" placeholder="e.g. kumare_agape" required />
+        </div>
+        <div class="field">
+          <label for="f-authorurl">Your link <span class="field-sub">(optional)</span></label>
+          <input type="url" id="f-authorurl" maxlength="200" placeholder="https://…" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label id="file-label" for="f-file">Add-on file <span class="field-sub" id="file-hint">(a single .js file)</span></label>
+        <label class="dropzone" for="f-file">
+          <input type="file" id="f-file" accept=".js" hidden />
+          <span class="dz-icon">↑</span>
+          <span class="dz-text" id="file-dztext">Choose your file or drop it here</span>
+        </label>
+      </div>
+
+      <div class="field" id="shots-field">
+        <label>Two screenshots <span class="field-sub" id="shots-hint">(the collapsed tile, then the open view)</span></label>
+        <div class="shots-grid">
+          <label class="dropzone shot" for="f-shot1">
+            <input type="file" id="f-shot1" accept="image/png,image/jpeg,image/webp" hidden />
+            <img class="shot-preview" id="shot1-preview" alt="" hidden />
+            <span class="dz-text" id="shot1-text">Screenshot 1</span>
+          </label>
+          <label class="dropzone shot" for="f-shot2">
+            <input type="file" id="f-shot2" accept="image/png,image/jpeg,image/webp" hidden />
+            <img class="shot-preview" id="shot2-preview" alt="" hidden />
+            <span class="dz-text" id="shot2-text">Screenshot 2</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- honeypot: hidden from humans, tempting to bots -->
+      <div class="hp" aria-hidden="true">
+        <label>Leave this empty<input type="text" id="f-website" tabindex="-1" autocomplete="off" /></label>
+      </div>
+
+      <div class="field" id="captcha-field">
+        <div class="cf-turnstile" id="turnstile-widget"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" id="submit-go">Submit for review</button>
+        <a class="btn btn-secondary" href="index.html">Cancel</a>
+      </div>
+
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="config.js"></script>
+  <script src="submit.js"></script>
+</body>
+</html>

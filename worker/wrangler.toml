@@ -1,0 +1,19 @@
+name = "nidus-tools-submit"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Public, non-secret config. Edit REPO/ALLOWED_ORIGIN if you fork this.
+[vars]
+REPO = "ParamoStudio/nidus-tools"
+ALLOWED_ORIGIN = "https://paramostudio.github.io"
+
+# Secrets (do NOT put here — set with `wrangler secret put`):
+#   GITHUB_TOKEN      fine-grained PAT on the repo: Contents RW + Pull requests RW
+#   TURNSTILE_SECRET  Cloudflare Turnstile secret key
+
+# Optional per-IP daily rate limit. Create a namespace and uncomment to enable:
+#   wrangler kv namespace create RATELIMIT
+# then paste the id below.
+# [[kv_namespaces]]
+# binding = "RATELIMIT"
+# id = "<your-kv-namespace-id>"

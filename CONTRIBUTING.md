@@ -7,7 +7,15 @@ feels easier.
 
 ---
 
-## Easiest path: let an AI do it
+## Easiest path: the upload form
+
+The simplest way — no GitHub account, no git — is the **[Upload form](https://paramostudio.github.io/nidus-tools/submit.html)**
+on the marketplace. Drop in your file, fill a few fields, done. It opens the pull request for you and
+gives you a link to follow the review. The paths below are for people who'd rather do it by hand.
+
+---
+
+## Let an AI do it
 
 Open your AI assistant (Claude, ChatGPT, or one that can use GitHub) and say something like:
 
