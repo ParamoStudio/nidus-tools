@@ -9,6 +9,7 @@
     "authorUrl": "https://github.com/kumare-agape",
     "version": "1.7.0",
     "category": "ceramics",
+    "example": true,
     "file": "tool.js",
     "screenshots": {
       "primary": "screenshot-tile.png",
@@ -27,6 +28,7 @@
     "authorUrl": "https://github.com/kumare-agape",
     "version": "1.0.0",
     "category": "ceramics",
+    "example": true,
     "file": "tool.js",
     "screenshots": {
       "primary": "screenshot-form.png",
@@ -45,6 +47,7 @@
     "authorUrl": "https://github.com/kumare-agape",
     "version": "1.0.0",
     "category": "ceramics",
+    "example": true,
     "file": "template.md",
     "addedAt": "2026-07-01",
     "dir": "entries/templates/ceramic-product"

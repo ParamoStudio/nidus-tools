@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Nidus Tools — Extend Nidus</title>
   <meta name="description" content="Browse, search and download installable tools, micro tools and templates for Nidus." />
-  <link rel="icon" href="data:," />
+  <link rel="icon" href="assets/nidus-favicon.png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="wordmark" href="#" data-nav="all">NIDUS</a>
+      <a class="wordmark" href="#" data-nav="featured">NIDUS</a>
       <nav class="topnav">
         <a href="#" data-nav="tool">Tools</a>
         <a href="#" data-nav="microtool">Micro Tools</a>
@@ -34,29 +34,24 @@
         <p>Install tools, micro tools and templates<br />to build the workspace you need.</p>
         <div class="hero-actions">
           <button class="btn btn-primary" id="browse-btn">Browse all tools</button>
-          <a class="btn btn-link" href="#" id="how-it-works-link">How it works →</a>
+          <button class="btn btn-secondary" id="submit-btn">Submit your own</button>
         </div>
       </div>
       <div class="hero-mark" aria-hidden="true">
-        <svg viewBox="0 0 240 240">
-          <rect x="10" y="10" width="220" height="220" rx="48" class="mark-plate" />
-          <ellipse cx="120" cy="132" rx="70" ry="80" class="mark-blob-outer" />
-          <ellipse cx="120" cy="148" rx="46" ry="54" class="mark-blob-mid" />
-          <ellipse cx="120" cy="164" rx="22" ry="26" class="mark-blob-inner" />
-        </svg>
+        <img src="assets/nidus-icon.png" alt="Nidus" />
       </div>
     </div>
   </section>
 
   <div class="divider-wrap"><div class="divider"></div></div>
 
-  <section class="filters">
+  <section class="filters" id="filters">
     <div class="filters-inner">
-      <div class="tabs" role="tablist" aria-label="Filter by type">
-        <button class="tab active" data-type="all" role="tab" aria-selected="true">All</button>
-        <button class="tab" data-type="tool" role="tab" aria-selected="false">Tools</button>
-        <button class="tab" data-type="microtool" role="tab" aria-selected="false">Micro Tools</button>
-        <button class="tab" data-type="template" role="tab" aria-selected="false">Templates</button>
+      <div class="tabs" role="tablist" aria-label="Browse by">
+        <button class="tab active" data-view="featured" role="tab" aria-selected="true">Featured</button>
+        <button class="tab" data-view="tool" role="tab" aria-selected="false">Tools</button>
+        <button class="tab" data-view="microtool" role="tab" aria-selected="false">Micro Tools</button>
+        <button class="tab" data-view="template" role="tab" aria-selected="false">Templates</button>
       </div>
       <div class="search-box">
         <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -66,25 +61,17 @@
   </section>
 
   <main class="content">
-    <section class="section" id="featured-section">
-      <div class="section-head">
-        <h2>Featured</h2>
-        <a href="#" class="view-all" data-scroll="all-section">View all →</a>
-      </div>
-      <div class="grid" id="featured-grid"></div>
-    </section>
-
-    <section class="section" id="tags-section">
-      <div class="section-head"><h2>Popular tags</h2></div>
+    <div class="tags-block" id="tags-block">
+      <div class="tags-label">Popular tags</div>
       <div class="tags-row" id="tags-row"></div>
-    </section>
+    </div>
 
-    <section class="section" id="all-section">
+    <section class="section" id="browse-section">
       <div class="section-head">
-        <h2 id="all-heading">All</h2>
+        <h2 id="view-heading">Featured</h2>
         <span class="result-count" id="result-count"></span>
       </div>
-      <div class="grid" id="all-grid"></div>
+      <div class="grid view-fade" id="grid"></div>
       <p class="empty-state" id="empty-state" hidden>No entries match your search.</p>
     </section>
   </main>
@@ -102,6 +89,7 @@
     </div>
   </footer>
 
+  <!-- Detail modal -->
   <div class="modal-overlay" id="modal-overlay" hidden>
     <div class="modal" role="dialog" aria-modal="true" id="modal">
       <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
@@ -109,6 +97,7 @@
     </div>
   </div>
 
+  <!-- How-it-works (install) modal -->
   <div class="modal-overlay" id="howto-overlay" hidden>
     <div class="modal modal-narrow" role="dialog" aria-modal="true">
       <button class="modal-close" id="howto-close" aria-label="Close">✕</button>
@@ -117,8 +106,56 @@
         <li>Browse or search for a tool, micro tool, or template.</li>
         <li>Download the file — it's a single <code>.js</code> (tools, micro tools) or <code>.md</code> (templates).</li>
         <li>In Nidus, open the Tool Library and choose <strong>Import</strong> — no auto-install, just pick the file you downloaded.</li>
-        <li>Want to contribute your own? See <a href="https://github.com/ParamoStudio/nidus-tools/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a> on GitHub.</li>
+        <li>Want to contribute your own? Use the <strong>Submit your own</strong> button on the home page.</li>
       </ol>
+    </div>
+  </div>
+
+  <!-- Submit-your-own modal (deliberately non-technical) -->
+  <div class="modal-overlay" id="submit-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="submit-close" aria-label="Close">✕</button>
+      <div class="submit-hero">
+        <h2>Share your own</h2>
+        <p>Made a tool, micro tool, or template for Nidus? Add it here so other makers can find it. It's free, and you don't need to be a programmer.</p>
+      </div>
+
+      <div class="submit-steps">
+        <div class="submit-step">
+          <span class="submit-num">1</span>
+          <div>
+            <h4>Make the file</h4>
+            <p>Every Nidus add-on is a single small file. If you're not sure how to write one, hand the matching guide to an AI (like Claude or ChatGPT) and describe what you want — it'll build the file for you.</p>
+            <div class="submit-links">
+              <a class="chip-link" href="https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-tool.md" target="_blank" rel="noopener">Tool guide →</a>
+              <a class="chip-link" href="https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-microtool.md" target="_blank" rel="noopener">Micro tool guide →</a>
+              <a class="chip-link" href="https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-blueprint.md" target="_blank" rel="noopener">Template guide →</a>
+            </div>
+          </div>
+        </div>
+        <div class="submit-step">
+          <span class="submit-num">2</span>
+          <div>
+            <h4>Follow the checklist</h4>
+            <p>The contributor guide walks you through it in plain language: what folder to make, the little description file to fill in (name, one-line summary, and <em>why</em> you built it), and — for tools and micro tools — two screenshots.</p>
+            <div class="submit-links">
+              <a class="chip-link" href="https://github.com/ParamoStudio/nidus-tools/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Read the guide →</a>
+            </div>
+          </div>
+        </div>
+        <div class="submit-step">
+          <span class="submit-num">3</span>
+          <div>
+            <h4>Send it in</h4>
+            <p>Upload it on GitHub as a “pull request” (the guide shows you exactly where to click). Someone reviews it, and once it's approved it appears here automatically.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <a class="btn btn-primary" href="https://github.com/ParamoStudio/nidus-tools/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Open the step-by-step guide</a>
+        <a class="btn btn-secondary" href="https://github.com/ParamoStudio/nidus-tools/fork" target="_blank" rel="noopener">Start on GitHub</a>
+      </div>
     </div>
   </div>
 

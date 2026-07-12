@@ -11,7 +11,7 @@
     entries: [],
     categories: [],
     downloadCounts: {}, // id -> count, from the GitHub Releases API
-    type: "all",
+    view: "featured", // "featured" | "tool" | "microtool" | "template"
     category: null,
     query: "",
   };
@@ -64,8 +64,11 @@
   }
 
   // ---------- URLs ----------
-  function fileUrl(entry) {
-    return entry.downloadUrl || "https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/" + entry.dir + "/" + entry.file;
+  // Download points at the GitHub Release asset: GitHub serves it with
+  // Content-Disposition: attachment, so it downloads the file directly instead
+  // of opening the source in the browser — and it increments download_count.
+  function downloadUrl(entry) {
+    return "https://github.com/" + REPO + "/releases/download/entry-" + entry.id + "/" + entry.file;
   }
   function sourceUrl(entry) {
     return "https://github.com/" + REPO + "/blob/" + BRANCH + "/" + entry.dir + "/" + entry.file;
@@ -88,11 +91,9 @@
     return qi === query.length ? 10 : -1;
   }
 
-  function matchesFilters(entry) {
-    if (state.type !== "all" && entry.type !== state.type) return false;
-    if (state.category && entry.category !== state.category) return false;
-    if (state.query && fuzzyScore(state.query, entry.name) < 0 && fuzzyScore(state.query, entry.summary) < 0) return false;
-    return true;
+  function matchesQuery(entry) {
+    if (!state.query) return true;
+    return fuzzyScore(state.query, entry.name) >= 0 || fuzzyScore(state.query, entry.summary) >= 0;
   }
 
   // ---------- icons (neutral placeholders per type; SF Symbols can't render on web) ----------
@@ -108,8 +109,9 @@
     var el = document.createElement("article");
     el.className = "card";
     el.tabIndex = 0;
+    var examplePill = entry.example ? '<span class="example-pill">Example</span>' : "";
     el.innerHTML =
-      '<div class="card-type">' + TYPE_LABEL[entry.type] + '</div>' +
+      '<div class="card-badges"><span class="card-type">' + TYPE_LABEL[entry.type] + '</span>' + examplePill + '</div>' +
       '<div class="card-icon">' + TYPE_ICON[entry.type] + '</div>' +
       '<h3 class="card-name">' + escapeHTML(entry.name) + '</h3>' +
       '<p class="card-summary">' + escapeHTML(entry.summary) + '</p>' +
@@ -118,7 +120,7 @@
         '<span>' + escapeHTML(entry.version) + '</span>' +
       '</div>';
     el.addEventListener("click", function () { openModal(entry); });
-    el.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") openModal(entry); });
+    el.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(entry); } });
     return el;
   }
 
@@ -128,13 +130,9 @@
     });
   }
 
-  function renderGrid(container, entries, emptyEl) {
-    container.innerHTML = "";
-    entries.forEach(function (e) { container.appendChild(cardEl(e)); });
-    if (emptyEl) emptyEl.hidden = entries.length > 0;
-  }
-
   function computeFeatured() {
+    // All-time top 20 by downloads, then re-sorted newest-first so new favourites
+    // surface into Featured rather than the list calcifying to the oldest hits.
     var withCounts = state.entries.map(function (e) {
       return Object.assign({}, e, { _downloads: state.downloadCounts[e.id] || 0 });
     });
@@ -144,18 +142,44 @@
     return top20;
   }
 
-  function renderFeatured() {
-    renderGrid(document.getElementById("featured-grid"), computeFeatured().slice(0, 4));
+  function byNewest(a, b) {
+    return a.addedAt < b.addedAt ? 1 : (a.addedAt > b.addedAt ? -1 : 0);
   }
 
-  function renderAll() {
-    var filtered = state.entries.filter(matchesFilters).slice().sort(function (a, b) {
-      return a.addedAt < b.addedAt ? 1 : (a.addedAt > b.addedAt ? -1 : 0);
-    });
-    var heading = document.getElementById("all-heading");
-    heading.textContent = state.type === "all" ? "All" : TYPE_LABEL[state.type] + "s";
-    document.getElementById("result-count").textContent = filtered.length + (filtered.length === 1 ? " result" : " results");
-    renderGrid(document.getElementById("all-grid"), filtered, document.getElementById("empty-state"));
+  function currentList() {
+    var list;
+    if (state.query) {
+      // A search spans every type, regardless of the active tab.
+      list = state.entries.filter(matchesQuery).slice().sort(byNewest);
+    } else if (state.view === "featured") {
+      list = computeFeatured();
+    } else {
+      list = state.entries.filter(function (e) { return e.type === state.view; }).slice().sort(byNewest);
+    }
+    if (state.category) list = list.filter(function (e) { return e.category === state.category; });
+    return list;
+  }
+
+  function currentHeading() {
+    if (state.query) return "Results";
+    if (state.view === "featured") return "Featured";
+    return TYPE_LABEL[state.view] + "s";
+  }
+
+  function renderBrowse() {
+    var list = currentList();
+    document.getElementById("view-heading").textContent = currentHeading();
+    document.getElementById("result-count").textContent = list.length + (list.length === 1 ? " result" : " results");
+
+    var grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    list.forEach(function (e) { grid.appendChild(cardEl(e)); });
+    document.getElementById("empty-state").hidden = list.length > 0;
+
+    // Re-trigger the fade-in on every view swap.
+    grid.classList.remove("view-fade");
+    void grid.offsetWidth;
+    grid.classList.add("view-fade");
   }
 
   function categoryCounts() {
@@ -175,20 +199,21 @@
       chip.textContent = c.label;
       chip.addEventListener("click", function () {
         state.category = state.category === c.id ? null : c.id;
-        refreshFilteredViews();
+        renderTags();
+        renderBrowse();
       });
       row.appendChild(chip);
     });
   }
 
-  function refreshFilteredViews() {
+  function setView(view) {
+    state.view = view;
     document.querySelectorAll(".tab").forEach(function (t) {
-      var active = t.dataset.type === state.type;
+      var active = t.dataset.view === view;
       t.classList.toggle("active", active);
       t.setAttribute("aria-selected", active ? "true" : "false");
     });
-    renderTags();
-    renderAll();
+    renderBrowse();
   }
 
   // ---------- modal ----------
@@ -207,9 +232,15 @@
         '</div>';
     }
 
+    var examplePill = entry.example ? ' <span class="example-pill">Example</span>' : "";
+    // Examples are placeholders until the catalog fills out — no download.
+    var downloadHTML = entry.example
+      ? '<button class="btn btn-primary" disabled title="This is a sample entry">Example — not downloadable</button>'
+      : '<a class="btn btn-primary" href="' + downloadUrl(entry) + '">Download</a>';
+
     body.innerHTML =
       mediaHTML +
-      '<div class="modal-type">' + TYPE_LABEL[entry.type] + '</div>' +
+      '<div class="modal-type">' + TYPE_LABEL[entry.type] + examplePill + '</div>' +
       '<h3>' + escapeHTML(entry.name) + '</h3>' +
       '<p class="modal-summary">' + escapeHTML(entry.summary) + '</p>' +
       '<div class="modal-meta-row">' +
@@ -220,7 +251,7 @@
       '<div class="why-box"><h4>What it\'s for</h4><p>' + escapeHTML(entry.why) + '</p></div>' +
       '<div class="readme-box" id="readme-box"></div>' +
       '<div class="modal-actions">' +
-        '<a class="btn btn-primary" href="' + fileUrl(entry) + '" download>Download</a>' +
+        downloadHTML +
         '<a class="btn btn-secondary" href="' + sourceUrl(entry) + '" target="_blank" rel="noopener">View source</a>' +
       '</div>';
 
@@ -287,51 +318,56 @@
     return html;
   }
 
+  // ---------- overlays ----------
   function closeModal() { document.getElementById("modal-overlay").hidden = true; }
+
+  function initOverlay(overlayId, closeId, openTriggers) {
+    var overlay = document.getElementById(overlayId);
+    function open() { overlay.hidden = false; }
+    function close() { overlay.hidden = true; }
+    document.getElementById(closeId).addEventListener("click", close);
+    overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
+    (openTriggers || []).forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (btn) btn.addEventListener("click", function (e) { e.preventDefault(); open(); });
+    });
+    return { open: open, close: close };
+  }
 
   // ---------- wiring ----------
   function initEvents() {
     document.querySelectorAll(".tab").forEach(function (tab) {
-      tab.addEventListener("click", function () {
-        state.type = tab.dataset.type;
-        refreshFilteredViews();
-      });
+      tab.addEventListener("click", function () { setView(tab.dataset.view); });
     });
-    document.querySelectorAll('.topnav a').forEach(function (link) {
+
+    document.querySelectorAll(".topnav a, .wordmark").forEach(function (link) {
       link.addEventListener("click", function (e) {
         e.preventDefault();
-        var t = link.dataset.nav;
-        state.type = t;
-        refreshFilteredViews();
-        document.getElementById("all-section").scrollIntoView({ behavior: "smooth" });
+        setView(link.dataset.nav);
+        document.getElementById("filters").scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
+
     document.getElementById("search-input").addEventListener("input", function (e) {
       state.query = e.target.value.trim();
-      renderAll();
+      renderBrowse();
     });
+
     document.getElementById("browse-btn").addEventListener("click", function () {
-      document.getElementById("all-section").scrollIntoView({ behavior: "smooth" });
+      document.getElementById("filters").scrollIntoView({ behavior: "smooth", block: "start" });
     });
-    document.querySelector('[data-scroll="all-section"]').addEventListener("click", function (e) {
-      e.preventDefault();
-      document.getElementById("all-section").scrollIntoView({ behavior: "smooth" });
-    });
+
     document.getElementById("modal-close").addEventListener("click", closeModal);
     document.getElementById("modal-overlay").addEventListener("click", function (e) {
       if (e.target.id === "modal-overlay") closeModal();
     });
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { closeModal(); closeHowTo(); }
-    });
 
-    var howtoOverlay = document.getElementById("howto-overlay");
-    function openHowTo() { howtoOverlay.hidden = false; }
-    function closeHowTo() { howtoOverlay.hidden = true; }
-    document.getElementById("help-btn").addEventListener("click", openHowTo);
-    document.getElementById("how-it-works-link").addEventListener("click", function (e) { e.preventDefault(); openHowTo(); });
-    document.getElementById("howto-close").addEventListener("click", closeHowTo);
-    howtoOverlay.addEventListener("click", function (e) { if (e.target.id === "howto-overlay") closeHowTo(); });
+    var howto = initOverlay("howto-overlay", "howto-close", ["help-btn"]);
+    var submit = initOverlay("submit-overlay", "submit-close", ["submit-btn"]);
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { closeModal(); howto.close(); submit.close(); }
+    });
   }
 
   function init() {
@@ -342,13 +378,12 @@
         state.categories = results[0];
         state.entries = results[1];
         state.downloadCounts = results[2];
-        renderFeatured();
         renderTags();
-        renderAll();
+        renderBrowse();
       })
       .catch(function (err) {
         console.error("Failed to load marketplace data", err);
-        document.getElementById("all-grid").innerHTML = '<p class="empty-state">Could not load the catalog.</p>';
+        document.getElementById("grid").innerHTML = '<p class="empty-state">Could not load the catalog.</p>';
       });
   }
 
