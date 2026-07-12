@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -34,6 +34,7 @@
         <p>Install tools, micro tools and templates<br />to build the workspace you need.</p>
         <div class="hero-actions">
           <button class="btn btn-primary" id="browse-btn">Browse all tools</button>
+          <button class="btn btn-secondary" id="create-btn">Create your own</button>
           <button class="btn btn-secondary" id="submit-btn">Submit your own</button>
         </div>
       </div>
@@ -125,11 +126,9 @@
           <span class="submit-num">1</span>
           <div>
             <h4>Make the file</h4>
-            <p>Every Nidus add-on is a single small file. If you're not sure how to write one, hand the matching guide to an AI (like Claude or ChatGPT) and describe what you want — it'll build the file for you.</p>
+            <p>Every Nidus add-on is a single small file. Don't know how to write one? An AI can build it for you in a couple of minutes — or make it yourself.</p>
             <div class="submit-links">
-              <a class="chip-link" href="https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-tool.md" target="_blank" rel="noopener">Tool guide →</a>
-              <a class="chip-link" href="https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-microtool.md" target="_blank" rel="noopener">Micro tool guide →</a>
-              <a class="chip-link" href="https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-blueprint.md" target="_blank" rel="noopener">Template guide →</a>
+              <a class="chip-link" href="HOW-TO-MAKE.md" target="_blank" rel="noopener">How to make one →</a>
             </div>
           </div>
         </div>
@@ -155,6 +154,48 @@
       <div class="modal-actions">
         <a class="btn btn-primary" href="https://github.com/ParamoStudio/nidus-tools/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Open the step-by-step guide</a>
         <a class="btn btn-secondary" href="https://github.com/ParamoStudio/nidus-tools/fork" target="_blank" rel="noopener">Start on GitHub</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create-your-own modal (make a file with an AI) -->
+  <div class="modal-overlay" id="create-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true">
+      <button class="modal-close" id="create-close" aria-label="Close">✕</button>
+      <div class="submit-hero">
+        <h2>Create your own</h2>
+        <p>Want to make a tool, micro tool, or template? It's easy, and you don't need to code. Pick what you want to build, download its skill, and hand it to your favourite AI (Claude, ChatGPT…). Describe what you want in plain words — it writes the file for you.</p>
+      </div>
+
+      <div class="create-options">
+        <div class="create-option">
+          <div class="create-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></div>
+          <div class="create-body">
+            <h4>Tool</h4>
+            <p>A whole new tool in your workspace — its own tile, cards, and open view.</p>
+          </div>
+          <a class="btn btn-secondary create-dl" href="skills/nidus-tool-skill.md" download>Download skill</a>
+        </div>
+        <div class="create-option">
+          <div class="create-icon"><svg viewBox="0 0 24 24"><path d="M15 4l1.5 3L20 8.5 16.5 10 15 13l-1.5-3L10 8.5 13.5 7 15 4z"/><path d="M6 14l1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z"/></svg></div>
+          <div class="create-body">
+            <h4>Micro tool</h4>
+            <p>A small form that turns your input into a clean block you can paste anywhere.</p>
+          </div>
+          <a class="btn btn-secondary create-dl" href="skills/nidus-microtool-skill.md" download>Download skill</a>
+        </div>
+        <div class="create-option">
+          <div class="create-icon"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+          <div class="create-body">
+            <h4>Template</h4>
+            <p>A ready-made layout for a project's Current Blueprint, tuned to a discipline.</p>
+          </div>
+          <a class="btn btn-secondary create-dl" href="skills/nidus-template-skill.md" download>Download skill</a>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <a class="btn btn-primary" href="HOW-TO-MAKE.md" target="_blank" rel="noopener">Read the full how-to</a>
       </div>
     </div>
   </div>

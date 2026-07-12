@@ -18,15 +18,14 @@
 
   // ---------- theme ----------
   function initTheme() {
+    // The document defaults to dark (data-theme="dark" on <html>); a saved
+    // preference overrides it.
     var saved = localStorage.getItem("nidus-theme");
     if (saved === "light" || saved === "dark") {
       document.documentElement.setAttribute("data-theme", saved);
     }
     document.getElementById("theme-toggle").addEventListener("click", function () {
-      var current = document.documentElement.getAttribute("data-theme");
-      if (!current) {
-        current = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      }
+      var current = document.documentElement.getAttribute("data-theme") || "dark";
       var next = current === "dark" ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", next);
       localStorage.setItem("nidus-theme", next);
@@ -364,9 +363,10 @@
 
     var howto = initOverlay("howto-overlay", "howto-close", ["help-btn"]);
     var submit = initOverlay("submit-overlay", "submit-close", ["submit-btn"]);
+    var create = initOverlay("create-overlay", "create-close", ["create-btn"]);
 
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { closeModal(); howto.close(); submit.close(); }
+      if (e.key === "Escape") { closeModal(); howto.close(); submit.close(); create.close(); }
     });
   }
 

@@ -1,83 +1,74 @@
-# Contributing a tool, micro tool, or template
+# Adding your add-on
 
-This marketplace has no upload form and no backend — you submit by opening a pull request, and a
-maintainer reviews it before it appears on the site. That's the whole moderation model.
+You don't need to be a programmer to share a tool, micro tool, or template here. Pick whichever path
+feels easier.
 
-## 1. Fork the repo, then add a folder
+*(First time making the file itself? See [How to make one](HOW-TO-MAKE.md) — an AI can build it for you.)*
 
-Pick the right type and create `entries/<type>/<your-id>/`:
+---
+
+## Easiest path: let an AI do it
+
+Open your AI assistant (Claude, ChatGPT, or one that can use GitHub) and say something like:
+
+> *"Help me submit my Nidus tool to the nidus-tools marketplace at
+> https://github.com/ParamoStudio/nidus-tools — here's my file."*
+
+Point it at this repo and give it your file. It can create the folder, write the small description, and
+open the submission for you. Then you just confirm.
+
+---
+
+## By-hand path (still simple)
+
+You'll add one small folder and open a "pull request" (GitHub's way of saying *"here's my addition,
+please include it"*). GitHub shows you buttons for each step.
+
+**1. Make a folder** for your add-on, based on its type:
 
 ```
-entries/tools/<your-id>/          entries/microtools/<your-id>/     entries/templates/<your-id>/
-  tool.js                           tool.js                           template.md
-  entry.json                        entry.json                        entry.json
-  screenshot-tile.png                screenshot-form.png               (no screenshots)
-  screenshot-expanded.png            screenshot-output.png
-  README.md (optional)               README.md (optional)              README.md (optional)
+entries/tools/<your-name>/           ← for a tool
+entries/microtools/<your-name>/      ← for a micro tool
+entries/templates/<your-name>/       ← for a template
 ```
 
-`<your-id>` is a kebab-case slug, unique across the whole `entries/` tree, and must match the `id`
-field inside your `entry.json`.
+**2. Put your file in it** (`tool.js` for a tool or micro tool, `template.md` for a template).
 
-## 2. Author the actual tool content
-
-Not sure how to write the file itself? Nidus has a dedicated authoring guide for each type — hand the
-whole guide to an AI (Claude, ChatGPT, etc.) or read it yourself:
-
-- **Tool** (`tool.js`, a full workspace tool: tile + cards + expanded view) → see
-  [`NIDUS-SKILL-tool.md`](https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-tool.md) /
-  the full `NIDUS-installable-tool-spec.md`.
-- **Micro tool** (`tool.js`, a form → Markdown block) → see
-  [`NIDUS-SKILL-microtool.md`](https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-microtool.md).
-- **Template** (`template.md`, a Current Blueprint field list) → see
-  [`NIDUS-SKILL-blueprint.md`](https://github.com/ParamoStudio/Nidus/blob/main/Skills/NIDUS-SKILL-blueprint.md).
-
-## 3. Fill in `entry.json`
-
-Every type uses the same shape — this is the *only* place display metadata lives, since none of the
-source file formats carry it themselves:
+**3. Add a small `entry.json`** describing it — copy this and fill it in:
 
 ```json
 {
-  "id": "your-id",
+  "id": "your-name",
   "type": "tool",
   "name": "Display Name",
-  "summary": "One sentence, shown on the card.",
-  "why": "2–4 sentences: what it's for, its use cases, why you built it. This is what makes a submission read as intentional rather than a dump.",
-  "author": "your-name-or-handle",
+  "summary": "One sentence about what it does.",
+  "why": "2–4 sentences: what it's for and why you made it.",
+  "author": "your-name",
   "authorUrl": "https://github.com/you",
   "version": "1.0.0",
-  "category": "one of the ids in categories.json",
+  "category": "ceramics",
   "file": "tool.js"
 }
 ```
 
-- `type` must be `tool`, `microtool`, or `template`, and must match the folder you put it in.
-- `category` must be one of the ids listed in [`categories.json`](categories.json). If your discipline
-  genuinely isn't represented, open an issue first rather than inventing a new category in your PR.
-- `screenshots` (tools and micro tools only — **omit entirely for templates**):
+- `type` is `tool`, `microtool`, or `template` (match the folder).
+- `category` must be one from [`categories.json`](categories.json).
+- **Tools and micro tools** also need two screenshots and this line in `entry.json`:
   ```json
-  "screenshots": { "primary": "screenshot-tile.png", "secondary": "screenshot-expanded.png" }
+  "screenshots": { "primary": "screenshot-1.png", "secondary": "screenshot-2.png" }
   ```
-  - **Tool**: `primary` = the collapsed board tile, `secondary` = the expanded/open view.
-  - **Micro tool**: `primary` = the form open beside a card, `secondary` = an example of the rendered
-    Markdown output.
-  - **Template**: don't add a screenshot. A blueprint's entire content is its title + field list, and
-    the site renders that live from your `template.md` — a screenshot would just be friction for zero
-    extra information.
+  For a tool: the collapsed tile, then the open view. For a micro tool: the form, then an example of its
+  output. **Templates need no screenshots** — the site draws a preview from your file.
 
-## 4. Open the PR
+**4. Open a pull request.** A maintainer checks it and merges it. Once merged, it appears on the site
+automatically.
 
-A maintainer checks: the file actually loads/parses per its spec, `entry.json` is complete and honest,
-screenshots are the real thing (not a stock photo), and nothing is spam, offensive, or malicious. Once
-merged, an Action rebuilds the catalog and republishes the site automatically — no further steps on
-your end.
+---
 
-## Ground rules
+## The rules (short)
 
-- One tool/micro-tool/template per PR, please — keeps review fast.
-- Tools and micro tools are plain JavaScript with no filesystem, network, or system access at runtime
-  (Nidus sandboxes them); that's enforced by the Nidus app itself, not by us, but obviously don't submit
-  something that tries to work around it.
-- Keep `why` honest and specific. "A tool for X because Y" beats generic marketing language.
-- If you're updating your own existing entry, bump `version` in `entry.json`.
+- One add-on per pull request.
+- Keep the `why` honest and specific.
+- Nidus runs every add-on in a locked sandbox (no file, network, or system access), but don't submit
+  anything spammy, broken, or malicious — PRs are reviewed.
+- Updating your own entry? Bump the `version`.
