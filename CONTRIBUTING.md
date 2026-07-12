@@ -13,6 +13,10 @@ The simplest way — no GitHub account, no git — is the **[Upload form](https:
 on the marketplace. Drop in your file, fill a few fields, done. It opens the pull request for you and
 gives you a link to follow the review. The paths below are for people who'd rather do it by hand.
 
+**Updating or forking:** when you submit through the form you get a one-time **edit code** — save it. To
+change your add-on later, open it on the marketplace → **Update (if you're the owner)** → paste the code.
+Anyone can also **Fork** an add-on to publish an improved version, credited back to the original.
+
 ---
 
 ## Let an AI do it

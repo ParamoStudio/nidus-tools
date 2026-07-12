@@ -70,7 +70,13 @@
     <section class="section" id="browse-section">
       <div class="section-head">
         <h2 id="view-heading">Featured</h2>
-        <span class="result-count" id="result-count"></span>
+        <div class="head-right">
+          <div class="sort-toggle" id="sort-toggle" hidden>
+            <button type="button" data-sort="newest" class="active">Newest</button>
+            <button type="button" data-sort="downloads">Most downloaded</button>
+          </div>
+          <span class="result-count" id="result-count"></span>
+        </div>
       </div>
       <div class="grid view-fade" id="grid"></div>
       <p class="empty-state" id="empty-state" hidden>No entries match your search.</p>

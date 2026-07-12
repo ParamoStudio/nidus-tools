@@ -63,6 +63,17 @@ wrangler dev
 verification and the GitHub write are live calls). The pure helpers are unit-tested in
 [`test/worker.test.mjs`](test/worker.test.mjs) — run `node test/worker.test.mjs`.
 
+## Updates & forks
+
+- On a successful **create**, the Worker generates a random **edit token**, stores only its SHA-256 hash
+  in the entry's `entry.json`, and returns the plaintext token to the submitter once. There's no
+  database — the hash lives in git.
+- An **update** (`action: "update"`) requires that token: the Worker hashes what's presented and compares
+  it to the stored hash before opening an update PR. Wrong token → rejected. The file/screenshots are
+  optional on update (omit to keep the current ones).
+- A **fork** is just a create carrying `forkedFrom`; it becomes its own entry with its own edit token,
+  credited to the original.
+
 ## How it fails safe
 
 - No CAPTCHA solved → rejected. Honeypot field filled → rejected.

@@ -24,14 +24,22 @@
 
   <main class="submit-page">
     <div class="submit-intro">
-      <h1>Submit an add-on</h1>
-      <p>Fill this in and we'll open a submission for you — no GitHub account or coding needed. A
+      <h1 id="page-title">Submit an add-on</h1>
+      <p id="page-intro">Fill this in and we'll open a submission for you — no GitHub account or coding needed. A
       maintainer reviews it, and once approved it appears on the marketplace. Don't have a file yet?
       <a href="HOW-TO-MAKE.md" target="_blank" rel="noopener">Make one first →</a></p>
     </div>
 
+    <div class="mode-banner" id="mode-banner" hidden></div>
+
     <form id="submit-form" class="form" novalidate>
-      <div class="field">
+      <div class="field" id="token-field" hidden>
+        <label for="f-token">Your edit code</label>
+        <input type="text" id="f-token" placeholder="Paste the code you saved when you first submitted this" autocomplete="off" />
+        <p class="field-hint">This is the secret code shown when the add-on was first submitted — the only way to prove you're the owner. Lost it? You can't update, but you can <a href="#" id="tofork">fork it instead</a>.</p>
+      </div>
+
+      <div class="field" id="type-field">
         <label>What are you submitting?</label>
         <div class="segmented" id="type-seg" role="radiogroup">
           <button type="button" class="seg active" data-type="tool" role="radio" aria-checked="true">Tool</button>

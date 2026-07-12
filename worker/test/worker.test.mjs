@@ -1,5 +1,5 @@
 // Pure-helper tests for the submission Worker. Run: node test/worker.test.mjs
-import { slugify, base64Bytes, validateSubmission, assembleEntry } from "../src/index.js";
+import { slugify, base64Bytes, validateSubmission, validateUpdate, assembleEntry, mergeEntry, sha256hex } from "../src/index.js";
 
 let failed = 0;
 function eq(actual, expected, label) {
@@ -59,6 +59,35 @@ ok(/^\d{4}-\d{2}-\d{2}$/.test(e.addedAt), "assemble addedAt date");
 var et = assembleEntry(tpl, "ceramic-product", []);
 eq(et.screenshots, undefined, "template has no screenshots key");
 eq(et.file, "template.md", "template file name");
+
+// forkedFrom provenance
+var fk = assembleEntry(baseBody({ forkedFrom: { id: "glaze-recipes", name: "Glaze Recipes", type: "tool" } }), "my-fork", ["png", "png"]);
+eq(fk.forkedFrom, { id: "glaze-recipes", name: "Glaze Recipes", type: "tool" }, "assemble forkedFrom");
+eq(assembleEntry(baseBody(), "x", ["png", "png"]).forkedFrom, undefined, "no forkedFrom when absent");
+
+// validateUpdate: token required; files optional
+eq(validateUpdate(baseBody(), cats).ok, false, "update without token rejected");
+ok(validateUpdate(baseBody({ editToken: "abc", screenshots: [], file: null }), cats).ok, "update allows omitted file+shots");
+ok(validateUpdate(baseBody({ editToken: "abc" }), cats).ok, "update with replacements ok");
+eq(validateUpdate(baseBody({ editToken: "abc", screenshots: [baseBody().screenshots[0]] }), cats).ok, false, "update one screenshot rejected");
+ok(validateUpdate(Object.assign({}, tpl, { editToken: "abc" }), cats).ok, "update template ok");
+
+// mergeEntry keeps identity + hash, sets updatedAt
+var existing = { id: "my-tool", type: "microtool", name: "Old", summary: "old", why: "old", author: "a", authorUrl: "", version: "1.0.0", category: "ceramics", file: "tool.js", screenshots: { primary: "screenshot-1.png", secondary: "screenshot-2.png" }, editTokenHash: "deadbeef", addedAt: "2026-01-01" };
+var merged = mergeEntry(existing, baseBody({ name: "New Name", version: "2.0.0" }));
+eq(merged.id, "my-tool", "merge keeps id");
+eq(merged.editTokenHash, "deadbeef", "merge keeps token hash");
+eq(merged.addedAt, "2026-01-01", "merge keeps addedAt");
+eq(merged.name, "New Name", "merge updates name");
+eq(merged.version, "2.0.0", "merge updates version");
+ok(/^\d{4}-\d{2}-\d{2}$/.test(merged.updatedAt), "merge sets updatedAt");
+
+// sha256hex determinism (async)
+var h1 = await sha256hex("hello");
+var h2 = await sha256hex("hello");
+eq(h1, h2, "sha256hex deterministic");
+eq(h1, "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824", "sha256hex known vector");
+ok(h1 !== (await sha256hex("hell0")), "sha256hex differs on input");
 
 console.log(failed ? ("\n" + failed + " test(s) failed") : "\nAll tests passed");
 process.exit(failed ? 1 : 0);

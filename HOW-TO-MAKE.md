@@ -36,3 +36,11 @@ sharing it.
 
 Happy with it? Publish it on this marketplace so other makers can find it — see
 [CONTRIBUTING.md](CONTRIBUTING.md). It's short, and an AI can do most of it for you.
+
+## Updating later
+
+When you submit through the [Upload form](https://paramostudio.github.io/nidus-tools/submit.html), you
+get a one-time **edit code**. Save it somewhere safe — it's the only way to prove you own the add-on.
+To change your file, screenshots, or details later, open your add-on on the marketplace, click
+**Update (if you're the owner)**, and paste that code. Lost the code? You can't edit in place, but anyone
+can **Fork** an add-on to publish an improved version (it's credited back to the original).

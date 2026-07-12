@@ -14,6 +14,7 @@
     view: "featured", // "featured" | "tool" | "microtool" | "template"
     category: null,
     query: "",
+    sort: "newest", // "newest" | "downloads" (type views only)
   };
 
   // ---------- theme ----------
@@ -145,6 +146,15 @@
     return a.addedAt < b.addedAt ? 1 : (a.addedAt > b.addedAt ? -1 : 0);
   }
 
+  function byDownloads(a, b) {
+    return (state.downloadCounts[b.id] || 0) - (state.downloadCounts[a.id] || 0);
+  }
+
+  // The sort toggle only applies inside a type view (not Featured, not a search).
+  function sortToggleVisible() {
+    return !state.query && state.view !== "featured";
+  }
+
   function currentList() {
     var list;
     if (state.query) {
@@ -153,7 +163,8 @@
     } else if (state.view === "featured") {
       list = computeFeatured();
     } else {
-      list = state.entries.filter(function (e) { return e.type === state.view; }).slice().sort(byNewest);
+      list = state.entries.filter(function (e) { return e.type === state.view; }).slice();
+      list.sort(state.sort === "downloads" ? byDownloads : byNewest);
     }
     if (state.category) list = list.filter(function (e) { return e.category === state.category; });
     return list;
@@ -169,6 +180,12 @@
     var list = currentList();
     document.getElementById("view-heading").textContent = currentHeading();
     document.getElementById("result-count").textContent = list.length + (list.length === 1 ? " result" : " results");
+
+    var toggle = document.getElementById("sort-toggle");
+    toggle.hidden = !sortToggleVisible();
+    toggle.querySelectorAll("button").forEach(function (b) {
+      b.classList.toggle("active", b.dataset.sort === state.sort);
+    });
 
     var grid = document.getElementById("grid");
     grid.innerHTML = "";
@@ -237,11 +254,23 @@
       ? '<button class="btn btn-primary" disabled title="This is a sample entry">Example — not downloadable</button>'
       : '<a class="btn btn-primary" href="' + downloadUrl(entry) + '">Download</a>';
 
+    var provenanceHTML = entry.forkedFrom
+      ? '<p class="forked-label">⑂ Forked from ' + escapeHTML(entry.forkedFrom.name || entry.forkedFrom.id) + '</p>'
+      : "";
+    // Update (owner) + Fork are only meaningful for real entries, not the seed examples.
+    var ownerHTML = entry.example ? "" :
+      '<div class="owner-actions">' +
+        '<a href="submit.html?update=' + entry.type + '/' + encodeURIComponent(entry.id) + '">Update (if you\'re the owner)</a>' +
+        '<span class="dot">·</span>' +
+        '<a href="submit.html?fork=' + entry.type + '/' + encodeURIComponent(entry.id) + '">Fork this</a>' +
+      '</div>';
+
     body.innerHTML =
       mediaHTML +
       '<div class="modal-type">' + TYPE_LABEL[entry.type] + examplePill + '</div>' +
       '<h3>' + escapeHTML(entry.name) + '</h3>' +
       '<p class="modal-summary">' + escapeHTML(entry.summary) + '</p>' +
+      provenanceHTML +
       '<div class="modal-meta-row">' +
         '<span>' + AUTHOR_ICON + " " + escapeHTML(entry.author) + '</span>' +
         '<span>v' + escapeHTML(entry.version) + '</span>' +
@@ -252,7 +281,8 @@
       '<div class="modal-actions">' +
         downloadHTML +
         '<a class="btn btn-secondary" href="' + sourceUrl(entry) + '" target="_blank" rel="noopener">View source</a>' +
-      '</div>';
+      '</div>' +
+      ownerHTML;
 
     fetch(entry.dir + "/README.md")
       .then(function (r) { return r.ok ? r.text() : null; })
@@ -337,6 +367,10 @@
   function initEvents() {
     document.querySelectorAll(".tab").forEach(function (tab) {
       tab.addEventListener("click", function () { setView(tab.dataset.view); });
+    });
+
+    document.querySelectorAll("#sort-toggle button").forEach(function (b) {
+      b.addEventListener("click", function () { state.sort = b.dataset.sort; renderBrowse(); });
     });
 
     document.querySelectorAll(".topnav a, .wordmark").forEach(function (link) {
