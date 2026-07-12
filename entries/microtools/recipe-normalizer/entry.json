@@ -1,0 +1,17 @@
+{
+  "id": "recipe-normalizer",
+  "type": "microtool",
+  "name": "Recipe Normalizer",
+  "summary": "Normalize any technical recipe to a base of 100, with additives as a percentage, and export a clean Markdown table.",
+  "why": "Glazes, clay bodies, cocktails, chemicals, paints — any recipe expressed as a ratio benefits from a common base. This turns a rough ingredient list into a normalized, comparable table in one paste, so you can eyeball two recipes side by side without doing the math by hand each time.",
+  "author": "kumare_agape",
+  "authorUrl": "https://github.com/kumare-agape",
+  "version": "1.0.0",
+  "category": "ceramics",
+  "file": "tool.js",
+  "screenshots": {
+    "primary": "screenshot-form.png",
+    "secondary": "screenshot-output.png"
+  },
+  "addedAt": "2026-06-15"
+}

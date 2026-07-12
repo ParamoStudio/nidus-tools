@@ -1,0 +1,74 @@
+name: Build catalog and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Validates every entries/**/entry.json and writes tools/index.json.
+      # Fails the whole workflow with a clear message if a submission is missing
+      # a required field, an unknown category, or a required screenshot — this is
+      # the automated half of moderation (the other half is PR review).
+      - name: Build tools/index.json
+        run: node scripts/build-index.js
+
+      # Each entry's installable file is attached as a GitHub Release asset so the
+      # public Releases API exposes a real, free `download_count` per asset — this
+      # is what the site's Featured section reads. No custom backend involved.
+      - name: Publish release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          for dir in $(jq -r '.[].dir' tools/index.json); do
+            id=$(basename "$dir")
+            file=$(jq -r --arg d "$dir" '.[] | select(.dir == $d) | .file' tools/index.json)
+            tag="entry-${id}"
+            asset_path="${dir}/${file}"
+
+            if gh release view "$tag" >/dev/null 2>&1; then
+              gh release upload "$tag" "$asset_path" --clobber
+            else
+              gh release create "$tag" "$asset_path" \
+                --title "$id" \
+                --notes "Marketplace entry: $id" \
+                --repo "${GITHUB_REPOSITORY}"
+            fi
+          done
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

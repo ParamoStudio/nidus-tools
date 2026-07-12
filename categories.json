@@ -1,0 +1,14 @@
+[
+  { "id": "ceramics", "label": "Ceramics" },
+  { "id": "textile", "label": "Textile" },
+  { "id": "woodworking", "label": "Woodworking" },
+  { "id": "painting", "label": "Painting" },
+  { "id": "photography", "label": "Photography" },
+  { "id": "music", "label": "Music" },
+  { "id": "dance", "label": "Dance" },
+  { "id": "writing", "label": "Writing" },
+  { "id": "software", "label": "Software" },
+  { "id": "productivity", "label": "Productivity" },
+  { "id": "research", "label": "Research" },
+  { "id": "other", "label": "Other" }
+]

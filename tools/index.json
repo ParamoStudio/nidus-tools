@@ -1,0 +1,52 @@
+[
+  {
+    "id": "glaze-recipes",
+    "type": "tool",
+    "name": "Glaze Recipes",
+    "summary": "A recipe book of glazes — normalized recipe, cone, surface — grouped by fired result.",
+    "why": "For ceramicists iterating on glazes: keep every tested recipe (normalized to 100, with cone and surface) in one place, grouped by fired result, so you stop re-deriving the same base. Built because scattered notes and spreadsheets lose the thread across firings.",
+    "author": "kumare_agape",
+    "authorUrl": "https://github.com/kumare-agape",
+    "version": "1.7.0",
+    "category": "ceramics",
+    "file": "tool.js",
+    "screenshots": {
+      "primary": "screenshot-tile.png",
+      "secondary": "screenshot-expanded.png"
+    },
+    "addedAt": "2026-06-01",
+    "dir": "entries/tools/glaze-recipes"
+  },
+  {
+    "id": "recipe-normalizer",
+    "type": "microtool",
+    "name": "Recipe Normalizer",
+    "summary": "Normalize any technical recipe to a base of 100, with additives as a percentage, and export a clean Markdown table.",
+    "why": "Glazes, clay bodies, cocktails, chemicals, paints — any recipe expressed as a ratio benefits from a common base. This turns a rough ingredient list into a normalized, comparable table in one paste, so you can eyeball two recipes side by side without doing the math by hand each time.",
+    "author": "kumare_agape",
+    "authorUrl": "https://github.com/kumare-agape",
+    "version": "1.0.0",
+    "category": "ceramics",
+    "file": "tool.js",
+    "screenshots": {
+      "primary": "screenshot-form.png",
+      "secondary": "screenshot-output.png"
+    },
+    "addedAt": "2026-06-15",
+    "dir": "entries/microtools/recipe-normalizer"
+  },
+  {
+    "id": "ceramic-product",
+    "type": "template",
+    "name": "Ceramic Product",
+    "summary": "A Current Blueprint template for ceramic pieces headed to production — clay, glaze, firing, packaging.",
+    "why": "A ceramic product has a fixed set of decisions that, once made, define the piece: clay body, glaze, firing schedule, packaging. This blueprint keeps them pinned as one focal point instead of scattered across notes, so you always know what's actually decided versus still open.",
+    "author": "kumare_agape",
+    "authorUrl": "https://github.com/kumare-agape",
+    "version": "1.0.0",
+    "category": "ceramics",
+    "file": "template.md",
+    "addedAt": "2026-07-01",
+    "dir": "entries/templates/ceramic-product"
+  }
+]

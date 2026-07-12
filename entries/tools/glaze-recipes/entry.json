@@ -1,0 +1,17 @@
+{
+  "id": "glaze-recipes",
+  "type": "tool",
+  "name": "Glaze Recipes",
+  "summary": "A recipe book of glazes — normalized recipe, cone, surface — grouped by fired result.",
+  "why": "For ceramicists iterating on glazes: keep every tested recipe (normalized to 100, with cone and surface) in one place, grouped by fired result, so you stop re-deriving the same base. Built because scattered notes and spreadsheets lose the thread across firings.",
+  "author": "kumare_agape",
+  "authorUrl": "https://github.com/kumare-agape",
+  "version": "1.7.0",
+  "category": "ceramics",
+  "file": "tool.js",
+  "screenshots": {
+    "primary": "screenshot-tile.png",
+    "secondary": "screenshot-expanded.png"
+  },
+  "addedAt": "2026-06-01"
+}

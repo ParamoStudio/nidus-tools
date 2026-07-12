@@ -1,0 +1,13 @@
+{
+  "id": "ceramic-product",
+  "type": "template",
+  "name": "Ceramic Product",
+  "summary": "A Current Blueprint template for ceramic pieces headed to production — clay, glaze, firing, packaging.",
+  "why": "A ceramic product has a fixed set of decisions that, once made, define the piece: clay body, glaze, firing schedule, packaging. This blueprint keeps them pinned as one focal point instead of scattered across notes, so you always know what's actually decided versus still open.",
+  "author": "kumare_agape",
+  "authorUrl": "https://github.com/kumare-agape",
+  "version": "1.0.0",
+  "category": "ceramics",
+  "file": "template.md",
+  "addedAt": "2026-07-01"
+}

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nidus Tools — Extend Nidus</title>
+  <meta name="description" content="Browse, search and download installable tools, micro tools and templates for Nidus." />
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="wordmark" href="#" data-nav="all">NIDUS</a>
+      <nav class="topnav">
+        <a href="#" data-nav="tool">Tools</a>
+        <a href="#" data-nav="microtool">Micro Tools</a>
+        <a href="#" data-nav="template">Templates</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>
+        </button>
+        <button class="icon-btn" id="help-btn" title="How it works" aria-label="How it works">?</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <h1>Extend Nidus.<br />Shape your workspace.</h1>
+        <p>Install tools, micro tools and templates<br />to build the workspace you need.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" id="browse-btn">Browse all tools</button>
+          <a class="btn btn-link" href="#" id="how-it-works-link">How it works →</a>
+        </div>
+      </div>
+      <div class="hero-mark" aria-hidden="true">
+        <svg viewBox="0 0 240 240">
+          <rect x="10" y="10" width="220" height="220" rx="48" class="mark-plate" />
+          <ellipse cx="120" cy="132" rx="70" ry="80" class="mark-blob-outer" />
+          <ellipse cx="120" cy="148" rx="46" ry="54" class="mark-blob-mid" />
+          <ellipse cx="120" cy="164" rx="22" ry="26" class="mark-blob-inner" />
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-wrap"><div class="divider"></div></div>
+
+  <section class="filters">
+    <div class="filters-inner">
+      <div class="tabs" role="tablist" aria-label="Filter by type">
+        <button class="tab active" data-type="all" role="tab" aria-selected="true">All</button>
+        <button class="tab" data-type="tool" role="tab" aria-selected="false">Tools</button>
+        <button class="tab" data-type="microtool" role="tab" aria-selected="false">Micro Tools</button>
+        <button class="tab" data-type="template" role="tab" aria-selected="false">Templates</button>
+      </div>
+      <div class="search-box">
+        <svg viewBox="0 0 24 24" width="16" height="16"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="search-input" placeholder="Search tools…" autocomplete="off" />
+      </div>
+    </div>
+  </section>
+
+  <main class="content">
+    <section class="section" id="featured-section">
+      <div class="section-head">
+        <h2>Featured</h2>
+        <a href="#" class="view-all" data-scroll="all-section">View all →</a>
+      </div>
+      <div class="grid" id="featured-grid"></div>
+    </section>
+
+    <section class="section" id="tags-section">
+      <div class="section-head"><h2>Popular tags</h2></div>
+      <div class="tags-row" id="tags-row"></div>
+    </section>
+
+    <section class="section" id="all-section">
+      <div class="section-head">
+        <h2 id="all-heading">All</h2>
+        <span class="result-count" id="result-count"></span>
+      </div>
+      <div class="grid" id="all-grid"></div>
+      <p class="empty-state" id="empty-state" hidden>No entries match your search.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="divider"></div>
+    <div class="footer-inner">
+      <p>Open source. Local-first. No subscriptions. No telemetry. No bullshit.</p>
+      <p class="footer-right">
+        Made for makers, by makers.
+        <a href="https://github.com/ParamoStudio/nidus-tools" target="_blank" rel="noopener" class="icon-link" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2.9-.3 2-.4 3-.4s2.1.1 3 .4c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.9 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5Z"/></svg>
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" id="modal">
+      <button class="modal-close" id="modal-close" aria-label="Close">✕</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="howto-overlay" hidden>
+    <div class="modal modal-narrow" role="dialog" aria-modal="true">
+      <button class="modal-close" id="howto-close" aria-label="Close">✕</button>
+      <h2>How it works</h2>
+      <ol class="howto-list">
+        <li>Browse or search for a tool, micro tool, or template.</li>
+        <li>Download the file — it's a single <code>.js</code> (tools, micro tools) or <code>.md</code> (templates).</li>
+        <li>In Nidus, open the Tool Library and choose <strong>Import</strong> — no auto-install, just pick the file you downloaded.</li>
+        <li>Want to contribute your own? See <a href="https://github.com/ParamoStudio/nidus-tools/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a> on GitHub.</li>
+      </ol>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
