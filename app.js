@@ -104,6 +104,18 @@
   };
   var AUTHOR_ICON = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.5 3.1-6 7-6s7 2.5 7 6"/></svg>';
 
+  // If the author links a GitHub profile, show their avatar; the generic icon shows
+  // underneath and is revealed if the avatar 404s (self-removing <img>).
+  function ghHandle(url) {
+    var m = String(url || "").match(/github\.com\/([A-Za-z0-9-]+)/);
+    return m ? m[1] : null;
+  }
+  function authorBadge(entry) {
+    var h = ghHandle(entry.authorUrl);
+    var avatar = h ? '<img class="avatar" src="https://github.com/' + h + '.png?size=48" alt="" loading="lazy" onerror="this.remove()" />' : "";
+    return '<span class="avatar-wrap">' + AUTHOR_ICON + avatar + '</span>';
+  }
+
   // ---------- rendering ----------
   function cardEl(entry) {
     var el = document.createElement("article");
@@ -116,7 +128,7 @@
       '<h3 class="card-name">' + escapeHTML(entry.name) + '</h3>' +
       '<p class="card-summary">' + escapeHTML(entry.summary) + '</p>' +
       '<div class="card-meta">' +
-        '<span class="card-author">' + AUTHOR_ICON + escapeHTML(entry.author) + '</span>' +
+        '<span class="card-author">' + authorBadge(entry) + escapeHTML(entry.author) + '</span>' +
         '<span>' + escapeHTML(entry.version) + '</span>' +
       '</div>';
     el.addEventListener("click", function () { openModal(entry); });
@@ -272,7 +284,7 @@
       '<p class="modal-summary">' + escapeHTML(entry.summary) + '</p>' +
       provenanceHTML +
       '<div class="modal-meta-row">' +
-        '<span>' + AUTHOR_ICON + " " + escapeHTML(entry.author) + '</span>' +
+        '<span class="meta-author">' + authorBadge(entry) + escapeHTML(entry.author) + '</span>' +
         '<span>v' + escapeHTML(entry.version) + '</span>' +
         '<span>' + escapeHTML(categoryLabel(entry.category)) + '</span>' +
       '</div>' +

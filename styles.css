@@ -243,8 +243,10 @@ a { color: inherit; text-decoration: none; }
   cursor: pointer; font-size: 13px;
 }
 .modal-close:hover { color: var(--text); }
-.modal-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
-.modal-shots img { width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border); display: block; aspect-ratio: 3/2; object-fit: cover; }
+.modal-shots { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; align-items: start; }
+/* Show screenshots at their natural aspect (tools have differently-shaped views) —
+   no forced crop; very tall shots are clamped and letterboxed on a subtle backdrop. */
+.modal-shots img { width: 100%; height: auto; max-height: 460px; object-fit: contain; background: var(--chip-bg); border-radius: var(--radius-sm); border: 1px solid var(--border); display: block; }
 .modal-type { font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
 .modal h3 { font-size: 24px; margin: 0 0 6px; }
 .modal-summary { color: var(--text-muted); font-size: 14.5px; margin: 0 0 20px; }
@@ -388,3 +390,9 @@ a { color: inherit; text-decoration: none; }
 .owner-actions a { color: var(--text-muted); transition: color 0.2s var(--ease); }
 .owner-actions a:hover { color: var(--accent); }
 .owner-actions .dot { margin: 0 8px; opacity: 0.5; }
+
+/* ---------- Author avatar (GitHub) ---------- */
+.avatar-wrap { position: relative; width: 16px; height: 16px; display: inline-block; border-radius: 50%; overflow: hidden; flex-shrink: 0; vertical-align: middle; }
+.avatar-wrap svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.6; display: block; }
+.avatar-wrap .avatar { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.card-author, .meta-author { display: inline-flex; align-items: center; gap: 6px; }

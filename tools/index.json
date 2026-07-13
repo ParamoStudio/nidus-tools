@@ -2,18 +2,17 @@
   {
     "id": "glaze-recipes",
     "type": "tool",
-    "name": "Glaze Recipes",
+    "name": "Glaze Library",
     "summary": "A recipe book of glazes — normalized recipe, cone, surface — grouped by fired result.",
-    "why": "For ceramicists iterating on glazes: keep every tested recipe (normalized to 100, with cone and surface) in one place, grouped by fired result, so you stop re-deriving the same base. Built because scattered notes and spreadsheets lose the thread across firings.",
-    "author": "kumare_agape",
-    "authorUrl": "https://github.com/kumare-agape",
+    "why": "For ceramicists iterating on glazes: keep every tested recipe (normalized to 100, with cone and surface) in one place, grouped by fired result, so you stop re-deriving the same base. Keepers can be saved to a cross-project library so your best recipes follow you into every new project. Built because scattered notes and spreadsheets lose the thread across firings.",
+    "author": "Paramo Studio",
+    "authorUrl": "https://github.com/ParamoStudio",
     "version": "1.7.0",
     "category": "ceramics",
-    "example": true,
     "file": "tool.js",
     "screenshots": {
       "primary": "screenshot-tile.png",
-      "secondary": "screenshot-expanded.png"
+      "secondary": "screenshot-recipe.png"
     },
     "addedAt": "2026-06-01",
     "dir": "entries/tools/glaze-recipes"
