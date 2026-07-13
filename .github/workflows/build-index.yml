@@ -60,13 +60,22 @@ jobs:
           for dir in $(jq -r '.[].dir' tools/index.json); do
             id=$(basename "$dir")
             file=$(jq -r --arg d "$dir" '.[] | select(.dir == $d) | .file' tools/index.json)
+            dname=$(jq -r --arg d "$dir" '.[] | select(.dir == $d) | .downloadName' tools/index.json)
             tag="entry-${id}"
-            asset_path="${dir}/${file}"
+            # Upload under the meaningful download name (e.g. nidus-tool-glaze-library.js)
+            # so the file the user gets is named properly, not "tool.js".
+            tmp="${RUNNER_TEMP}/${dname}"
+            cp "${dir}/${file}" "$tmp"
 
             if gh release view "$tag" >/dev/null 2>&1; then
-              gh release upload "$tag" "$asset_path" --clobber
+              gh release upload "$tag" "$tmp" --clobber
+              # Drop the old generic-named asset if it lingers (keeps the release clean;
+              # never delete/recreate the release itself — that would reset download_count).
+              if [ "$dname" != "$file" ]; then
+                gh release delete-asset "$tag" "$file" -y 2>/dev/null || true
+              fi
             else
-              gh release create "$tag" "$asset_path" \
+              gh release create "$tag" "$tmp" \
                 --title "$id" \
                 --notes "Marketplace entry: $id" \
                 --repo "${GITHUB_REPOSITORY}"

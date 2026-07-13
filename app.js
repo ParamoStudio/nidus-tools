@@ -68,7 +68,9 @@
   // Content-Disposition: attachment, so it downloads the file directly instead
   // of opening the source in the browser — and it increments download_count.
   function downloadUrl(entry) {
-    return "https://github.com/" + REPO + "/releases/download/entry-" + entry.id + "/" + entry.file;
+    // The Release asset is published under downloadName (e.g. nidus-tool-glaze-library.js),
+    // so the file the user saves is named meaningfully.
+    return "https://github.com/" + REPO + "/releases/download/entry-" + entry.id + "/" + (entry.downloadName || entry.file);
   }
   function sourceUrl(entry) {
     return "https://github.com/" + REPO + "/blob/" + BRANCH + "/" + entry.dir + "/" + entry.file;
@@ -249,15 +251,18 @@
     var body = document.getElementById("modal-body");
     var isTemplate = entry.type === "template";
 
+    var shotUrls = [];
     var mediaHTML = "";
     if (isTemplate) {
       mediaHTML = renderBlueprintPreview(entry);
     } else if (entry.screenshots) {
-      mediaHTML =
-        '<div class="modal-shots">' +
-          '<img src="' + assetUrl(entry, entry.screenshots.primary) + '" alt="' + escapeHTML(entry.name) + ' — primary view" loading="lazy" />' +
-          '<img src="' + assetUrl(entry, entry.screenshots.secondary) + '" alt="' + escapeHTML(entry.name) + ' — secondary view" loading="lazy" />' +
-        '</div>';
+      shotUrls = [assetUrl(entry, entry.screenshots.primary), assetUrl(entry, entry.screenshots.secondary)];
+      // Compact thumbnails; click to open the lightbox viewer.
+      mediaHTML = '<div class="modal-thumbs">' + shotUrls.map(function (u, i) {
+        return '<button type="button" class="thumb" data-i="' + i + '" aria-label="Enlarge screenshot ' + (i + 1) + '">' +
+          '<img src="' + u + '" alt="" loading="lazy" onerror="this.closest(\'.thumb\').style.display=\'none\'" />' +
+          '<span class="thumb-zoom">⤢</span></button>';
+      }).join("") + '</div>';
     }
 
     var examplePill = entry.example ? ' <span class="example-pill">Example</span>' : "";
@@ -303,8 +308,31 @@
       })
       .catch(function () {});
 
+    body.querySelectorAll(".thumb").forEach(function (t) {
+      t.addEventListener("click", function () { openLightbox(shotUrls, parseInt(t.dataset.i, 10), entry.name); });
+    });
+
     document.getElementById("modal-overlay").hidden = false;
   }
+
+  // ---------- lightbox ----------
+  var lb = { images: [], index: 0, name: "" };
+  function openLightbox(images, index, name) {
+    lb.images = images || []; lb.index = index || 0; lb.name = name || "";
+    if (!lb.images.length) return;
+    renderLightbox();
+    document.getElementById("lightbox").hidden = false;
+  }
+  function renderLightbox() {
+    document.getElementById("lb-img").src = lb.images[lb.index];
+    document.getElementById("lb-img").alt = lb.name + " — screenshot " + (lb.index + 1);
+    document.getElementById("lb-counter").textContent = (lb.index + 1) + " / " + lb.images.length;
+    var multi = lb.images.length > 1;
+    document.getElementById("lb-prev").style.display = multi ? "" : "none";
+    document.getElementById("lb-next").style.display = multi ? "" : "none";
+  }
+  function lbStep(d) { lb.index = (lb.index + d + lb.images.length) % lb.images.length; renderLightbox(); }
+  function closeLightbox() { document.getElementById("lightbox").hidden = true; }
 
   function categoryLabel(id) {
     var found = state.categories.find(function (c) { return c.id === id; });
@@ -411,8 +439,22 @@
     var submit = initOverlay("submit-overlay", "submit-close", ["submit-btn"]);
     var create = initOverlay("create-overlay", "create-close", ["create-btn"]);
 
+    // Lightbox
+    document.getElementById("lb-close").addEventListener("click", closeLightbox);
+    document.getElementById("lb-prev").addEventListener("click", function () { lbStep(-1); });
+    document.getElementById("lb-next").addEventListener("click", function () { lbStep(1); });
+    document.getElementById("lightbox").addEventListener("click", function (e) {
+      if (e.target.id === "lightbox") closeLightbox();
+    });
+
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape") { closeModal(); howto.close(); submit.close(); create.close(); }
+      var lbOpen = !document.getElementById("lightbox").hidden;
+      if (e.key === "Escape") {
+        if (lbOpen) return closeLightbox();
+        closeModal(); howto.close(); submit.close(); create.close();
+      }
+      if (lbOpen && e.key === "ArrowLeft") lbStep(-1);
+      if (lbOpen && e.key === "ArrowRight") lbStep(1);
     });
   }
 

@@ -18,6 +18,17 @@ const VALID_CATEGORIES = new Set(
   JSON.parse(fs.readFileSync(path.join(ROOT, "categories.json"), "utf8")).map((c) => c.id)
 );
 
+function slugify(name) {
+  return (
+    String(name || "")
+      .toLowerCase()
+      .normalize("NFD").replace(/[̀-ͯ]/g, "") // strip accents
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 48) || "untitled"
+  );
+}
+
 let errors = [];
 let entries = [];
 
@@ -82,6 +93,9 @@ for (const typeDir of TYPES) {
 
     // Paths relative to the repo root, so the site can fetch them directly.
     entry.dir = `entries/${typeDir}/${id}`;
+    // The filename the user gets when they download — meaningful, not "tool.js".
+    // The Action publishes the Release asset under this name; the site links to it.
+    entry.downloadName = `nidus-${entry.type}-${slugify(entry.name)}.${entry.file.split(".").pop()}`;
     entries.push(entry);
   }
 }

@@ -12,10 +12,11 @@
     "file": "tool.js",
     "screenshots": {
       "primary": "screenshot-tile.png",
-      "secondary": "screenshot-recipe.png"
+      "secondary": "screenshot-expanded.png"
     },
     "addedAt": "2026-06-01",
-    "dir": "entries/tools/glaze-recipes"
+    "dir": "entries/tools/glaze-recipes",
+    "downloadName": "nidus-tool-glaze-library.js"
   },
   {
     "id": "recipe-normalizer",
@@ -34,7 +35,8 @@
       "secondary": "screenshot-output.png"
     },
     "addedAt": "2026-06-15",
-    "dir": "entries/microtools/recipe-normalizer"
+    "dir": "entries/microtools/recipe-normalizer",
+    "downloadName": "nidus-microtool-recipe-normalizer.js"
   },
   {
     "id": "ceramic-product",
@@ -49,6 +51,7 @@
     "example": true,
     "file": "template.md",
     "addedAt": "2026-07-01",
-    "dir": "entries/templates/ceramic-product"
+    "dir": "entries/templates/ceramic-product",
+    "downloadName": "nidus-template-ceramic-product.md"
   }
 ]
